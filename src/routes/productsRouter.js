@@ -42,13 +42,13 @@ productsRouter.get('/:pId', async (req, res) => {
 })
 
 
-productsRouter.post('/new',async (req,res)=>{
+productsRouter.post('/',async (req,res)=>{
     await pM.addproduct(req.body);
-    res.send(req.body)
 })
 
 productsRouter.put('/:pId',async (req,res)=>{
-    await pM.updateProduct(req.params.pId,req.body)
+    const id =parseInt(req.params.pId)
+    await pM.updateProduct(id,req.body)
 })
 
 productsRouter.delete('/:pId',async (req,res)=>{

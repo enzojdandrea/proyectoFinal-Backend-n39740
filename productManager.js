@@ -25,14 +25,12 @@ class productManager {
 
     async addproduct(product) {
         await this.loadProducts()
-        console.log(product)
         try {
             if (this.products.length != 0) {
-                
                 const { code } = product
                 const productFind = this.products.find((product) => product.code === code);
                 if (productFind) {
-                    throw Error("Ya exisiste un producto con ese codigo")
+                    return ("porducto ya existente")
                 }
                 this.id = this.id + 1
             }
@@ -68,11 +66,18 @@ class productManager {
         const foundProduct = productsParse.find((prod) => {
             return prod.id === id
         })
-        if (!foundProduct) {
-            throw Error(`No existe ningun porducto con ID: ${id}`);
+        const codeProduct = productsParse.find((prod)=>{
+            return prod.code===newData.code
+        })
+        if (!foundProduct||codeProduct) {
+            throw Error(`No existe ningun producto con ID: ${id} o el codigo ${newData.code} ya existe`);
         }
-        foundProduct=newData;
-
+        const indice = productsParse.findIndex((element,indice)=>{
+            if(element.id===id){
+                return true
+            }
+        })
+        productsParse.splice(indice,1,{...newData,"id":id})
         await fs.promises.writeFile(this.path, JSON.stringify(productsParse))
     }
 
