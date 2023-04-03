@@ -1,6 +1,8 @@
-const fs = require('fs')
+import fs from 'fs'
 
-class cartManage {
+// const fs = require('fs')
+
+class cartsManager {
     id = 1
     constructor() {
         this.carts = []
@@ -82,4 +84,4 @@ class cartManage {
         await fs.promises.writeFile(this.path, JSON.stringify(newCart))
     }
 }
-module.exports = cartManage;
+export default cartsManager;

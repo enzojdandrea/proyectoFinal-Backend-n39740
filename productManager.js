@@ -1,6 +1,7 @@
-const fs = require('fs')
+import fs from 'fs/promises'
+// const fs = require('fs')
 
-class productsManage {
+class productsManager {
     id = 1
     constructor() {
         this.products = []
@@ -80,4 +81,5 @@ class productsManage {
     }
 }
 
-module.exports = productsManage;
+// module.exports = productsManager;
+export default productsManager
