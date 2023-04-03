@@ -1,18 +1,17 @@
 const Express = require('express')
 const app = Express();
 
-const productsManager = require('./productManager')
+const productsManager = require('../../productManager.js')
 const pM = new productsManager();
-
+app.use(Express.json())
+app.use(Express.urlencoded({ extended: true }))
 
 app.get('/', async (req, res) => {
     const products = await pM.getProducts()
     res.send(products)
 })
 
-app.use(Express.urlencoded({ extended: true }))
-
-app.get('/products', async (req, res) => {
+app.get('/', async (req, res) => {
     let consulta = req.query
     let { limit } = consulta
 
@@ -30,7 +29,7 @@ app.get('/products', async (req, res) => {
     res.send(prodructsLimit)
 })
 
-app.get('/products/:pId', async (req, res) => {
+app.get('/:pId', async (req, res) => {
     const productId = +req.params.pId
     const product = await pM.getProductsById(productId)
 
@@ -38,6 +37,18 @@ app.get('/products/:pId', async (req, res) => {
         res.send({ error: "Producto no encontrado" })
     }
     res.send(product)
+})
+
+app.post('/',async (req,res)=>{
+    await pM.addproduct(req.body);
+})
+
+app.put('/:pId',async (req,res)=>{
+    await pM.updateProduct(req.params.pId,req.body)
+})
+
+app.delete('/:pId',async (req,res)=>{
+    await pM.deleteProduct(req.params.pId)
 })
 
 app.listen(8084, () => {

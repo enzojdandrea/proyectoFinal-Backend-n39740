@@ -1,5 +1,5 @@
 const fs = require('fs')
-// import fs from "fs"
+
 class productsManage {
     id = 1
     constructor() {
@@ -57,7 +57,7 @@ class productsManage {
         return product;
     }
 
-    async updateProduct(id, atribute, newData) {
+    async updateProduct(id, newData) {
         const products = await fs.promises.readFile(this.path, 'utf-8')
         const productsParse = JSON.parse(products)
 
@@ -67,7 +67,7 @@ class productsManage {
         if (!foundProduct) {
             throw Error(`No existe ningun porducto con ID: ${id}`);
         }
-        foundProduct[atribute] = newData;
+        foundProduct=newData;
 
         await fs.promises.writeFile(this.path, JSON.stringify(productsParse))
     }
