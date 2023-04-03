@@ -7,8 +7,6 @@ const cartsRouter = Router()
 // const cartsManager = require('../../cartManager.js')
 
 const cM = new cartsManager();
-cartsRouter.use(Express.json())
-cartsRouter.use(Express.urlencoded({ extended: true }))
 
 cartsRouter.get('/', async (req, res) => {
     const carts = await cM.getProducts()
@@ -20,16 +18,20 @@ cartsRouter.get('/', async (req, res) => {
     let { limit } = consulta
 
     const carts = await cM.getProducts()
-    const cartsLimit = []
+    const newCartsList = []
 
-    for (let i = 0; i < limit; i++) {
-        if (!carts[i]) {
-            i = limit
-        } else {
-            cartsLimit.push(carts[i])
+    if(limit){
+        for (let i = 0; i < limit; i++) {
+            if (!carts[i]) {
+                i = limit
+            } else {
+                newCartsList.push(carts[i])
+            }
         }
-    }
-    res.send(cartsLimit)
+    }else{
+        newCartsList.push(...carts)
+    }    
+    res.send(newCartsList)
 })
 
 cartsRouter.get('/:pId', async (req, res) => {
@@ -41,3 +43,5 @@ cartsRouter.get('/:pId', async (req, res) => {
     }
     res.send(product)
 })
+
+export default cartsRouter

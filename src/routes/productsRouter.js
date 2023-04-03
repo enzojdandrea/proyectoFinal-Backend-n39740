@@ -1,35 +1,34 @@
-import { Router } from 'express'
-import productsManager from '../../productManager.js'
+import { Router, json } from 'express'
+import productManager from '../../productManager.js'
 const productsRouter = Router()
 
 // const { Router } = require('express')
 // const Express = require('express')
 // const app = Router();
-// const productsManager = require('../../productManager.js')
+// const productManager = require('../../productManager.js')
 
-const pM = new productsManager();
-
-productsRouter.get('/', async (req, res) => {
-    const products = await pM.getProducts()
-    res.send(products)
-})
+const pM = new productManager();
+// const produtcs = await pM.loadProducts();
 
 productsRouter.get('/', async (req, res) => {
     let consulta = req.query
     let { limit } = consulta
 
     const products = await pM.getProducts()
-    const prodructsLimit = []
-
-    for (let i = 0; i < limit; i++) {
-        if (!products[i]) {
-            i = limit
-        } else {
-            prodructsLimit.push(products[i])
+    const newListProducts = []
+    if (limit){
+        for (let i = 0; i < limit; i++) {
+            if (!products[i]) {
+                i = limit
+            } else {
+                newListProducts.push(products[i])
+            }
         }
+    }else{
+        newListProducts.push(...products);
     }
-
-    res.send(prodructsLimit)
+    
+    res.send(newListProducts)
 })
 
 productsRouter.get('/:pId', async (req, res) => {
@@ -42,8 +41,10 @@ productsRouter.get('/:pId', async (req, res) => {
     res.send(product)
 })
 
-productsRouter.post('/',async (req,res)=>{
+
+productsRouter.post('/new',async (req,res)=>{
     await pM.addproduct(req.body);
+    res.send(req.body)
 })
 
 productsRouter.put('/:pId',async (req,res)=>{

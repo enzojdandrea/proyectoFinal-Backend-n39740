@@ -1,14 +1,14 @@
-import fs from 'fs/promises'
+import fs from 'fs'
 // const fs = require('fs')
 
-class productsManager {
+class productManager {
     id = 1
     constructor() {
         this.products = []
         this.path = 'products.json'
     }
 
-    async loadProdcuts() {
+    async loadProducts() {
         try {
             const products = await fs.promises.readFile(this.path, 'utf-8')
             if (products.length != 0) {
@@ -24,14 +24,17 @@ class productsManager {
     }
 
     async addproduct(product) {
+        await this.loadProducts()
+        console.log(product)
         try {
             if (this.products.length != 0) {
+                
                 const { code } = product
                 const productFind = this.products.find((product) => product.code === code);
-                this.id = this.id + 1
                 if (productFind) {
                     throw Error("Ya exisiste un producto con ese codigo")
                 }
+                this.id = this.id + 1
             }
             this.products.push(
                 {
@@ -82,4 +85,4 @@ class productsManager {
 }
 
 // module.exports = productsManager;
-export default productsManager
+export default productManager
