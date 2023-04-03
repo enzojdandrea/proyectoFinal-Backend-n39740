@@ -1,17 +1,20 @@
-const Express = require('express')
-const app = Express();
+import { Router } from 'express'
+import productsManager from '../../productManager.js'
+const productsRouter = Router()
 
-const productsManager = require('../../productManager.js')
+// const { Router } = require('express')
+// const Express = require('express')
+// const app = Router();
+// const productsManager = require('../../productManager.js')
+
 const pM = new productsManager();
-app.use(Express.json())
-app.use(Express.urlencoded({ extended: true }))
 
-app.get('/', async (req, res) => {
+productsRouter.get('/', async (req, res) => {
     const products = await pM.getProducts()
     res.send(products)
 })
 
-app.get('/', async (req, res) => {
+productsRouter.get('/', async (req, res) => {
     let consulta = req.query
     let { limit } = consulta
 
@@ -29,7 +32,7 @@ app.get('/', async (req, res) => {
     res.send(prodructsLimit)
 })
 
-app.get('/:pId', async (req, res) => {
+productsRouter.get('/:pId', async (req, res) => {
     const productId = +req.params.pId
     const product = await pM.getProductsById(productId)
 
@@ -39,18 +42,16 @@ app.get('/:pId', async (req, res) => {
     res.send(product)
 })
 
-app.post('/',async (req,res)=>{
+productsRouter.post('/',async (req,res)=>{
     await pM.addproduct(req.body);
 })
 
-app.put('/:pId',async (req,res)=>{
+productsRouter.put('/:pId',async (req,res)=>{
     await pM.updateProduct(req.params.pId,req.body)
 })
 
-app.delete('/:pId',async (req,res)=>{
+productsRouter.delete('/:pId',async (req,res)=>{
     await pM.deleteProduct(req.params.pId)
 })
 
-app.listen(8084, () => {
-    console.log("Servidor Escuchando")
-})
+export default productsRouter
