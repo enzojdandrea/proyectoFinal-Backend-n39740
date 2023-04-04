@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import cartsManager from '../../cartManager.js';
-const cartsRouter = Router()
+const cartRouter = Router()
 
 // const Express = require('express')
 // const app = Express();
@@ -8,16 +8,11 @@ const cartsRouter = Router()
 
 const cM = new cartsManager();
 
-cartsRouter.get('/', async (req, res) => {
-    const carts = await cM.getProducts()
-    res.send(carts)
-})
-
-cartsRouter.get('/', async (req, res) => {
+cartRouter.get('/', async (req, res) => {
     let consulta = req.query
     let { limit } = consulta
 
-    const carts = await cM.getProducts()
+    const carts = await cM.getCart()
     const newCartsList = []
 
     if(limit){
@@ -34,14 +29,50 @@ cartsRouter.get('/', async (req, res) => {
     res.send(newCartsList)
 })
 
-cartsRouter.get('/:pId', async (req, res) => {
-    const productId = +req.params.pId
-    const product = await pM.getProductsById(productId)
+cartRouter.get('/:cId', async (req, res) => {
+    const cartId = +req.params.cId
+    const cart = await cM.getCartById(cartId)
 
-    if (!product) {
+    if (!cart) {
         res.send({ error: "Producto no encontrado" })
     }
-    res.send(product)
+    res.send(cart)
 })
 
-export default cartsRouter
+cartRouter.post('/',async (req,res)=>{
+    const products = req.body;
+    const cart = []
+    function isObject(val) {
+        return (typeof val === 'object');
+    }
+
+    if(!Array.isArray(products)){
+        if(!isObject(products)){
+            return res.status(400).send({ status: "error", error: "Valores incorrectos." });
+        }
+        if((!products.hasOwnProperty("id"))&&(!products.hasOwnProperty("quantity"))){
+            return res.status(400).send({ status: "error", error: "El Objeto no posee las propiedades id o quantity"});
+        }
+        cart.push({
+            "id":products.id,
+            "quantity":products.quantity
+        })
+    }else{
+        products.forEach(element => {
+            if(!isObject(element)){
+                return res.status(400).send({ status: "error", error: "Valores incorrectos." });
+            }
+            if((!element.hasOwnProperty("id"))&&(!element.hasOwnProperty("quantity"))){
+                return res.status(400).send({ status: "error", error: "El Objeto no posee las propiedades id o quantity"});
+            }
+            cart.push({
+                "id":element.id,
+                "quantity":element.quantity
+            })
+        });
+    }
+    await cM.addcart(cart)
+    return res.status(200).send({status:"OK",OK:cart})
+})
+
+export default cartRouter

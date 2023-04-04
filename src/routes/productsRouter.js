@@ -41,7 +41,6 @@ productsRouter.get('/:pId', async (req, res) => {
     res.send(product)
 })
 
-
 productsRouter.post('/',async (req,res)=>{
     await pM.addproduct(req.body);
 })
