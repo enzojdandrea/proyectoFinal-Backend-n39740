@@ -1,7 +1,5 @@
 import fs from 'fs'
 
-// const fs = require('fs')
-
 class cartsManager {
     id = 1
     constructor() {
@@ -13,12 +11,12 @@ class cartsManager {
         try {
             const carts = await fs.promises.readFile(this.path, 'utf-8')
             if (carts.length != 0) {
-                this.carts = JSON.parse(cart)
+                this.carts = JSON.parse(carts)
                 const lengt = this.carts.length
                 this.id = this.carts[lengt - 1].id
             }
         } catch (error) {
-            await fs.promises.writeFile(this.path, JSON.stringify(this.cart))
+            const carts = await fs.promises.writeFile(this.path, JSON.stringify(this.carts))
             console.log(error)
         }
 
@@ -40,16 +38,18 @@ class cartsManager {
     }
 
     async addcart(cart) {
+        await this.loadCarts();
+        const products = {...cart}
         try {
-            if (this.cart.length != 0) {
+            if (this.carts.length != 0) {
                 this.id = this.id + 1
             }
-            this.cart.push(
+            this.carts.push(
                 {
-                    ...cart,
-                    id: this.id
+                    "products":products,
+                    "id": this.id
                 })
-            await fs.promises.writeFile(this.path, JSON.stringify(this.cart))
+            await fs.promises.writeFile(this.path, JSON.stringify(this.carts))
             return 'Carrito agregado'
         }
         catch (error) {
