@@ -75,4 +75,14 @@ cartRouter.post('/',async (req,res)=>{
     return res.status(200).send({status:"OK",OK:cart})
 })
 
+cartRouter.post('/:cId/product/:pId', async (req,res)=>{
+    const cId = parseInt(req.params.cId)
+    const pId = parseInt(req.params.pId)
+    const { quantity } =  req.body
+    if(!quantity){
+        return res.status(400).send({status:"error",error: "No se a ingresado quantity"})
+    }
+    await cM.addProductToCart(cId,pId,quantity)
+})
+
 export default cartRouter

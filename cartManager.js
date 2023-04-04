@@ -1,3 +1,4 @@
+import { json } from 'express'
 import fs from 'fs'
 
 class cartsManager {
@@ -31,7 +32,7 @@ class cartsManager {
         const carts = await fs.promises.readFile(this.path, 'utf-8')
         const cartParse = JSON.parse(carts)
         const cart = cartParse.find((car) => car.id === id);
-        if(!cart){
+        if (!cart) {
             throw Error("Carrito no encontrado")
         }
         return cart;
@@ -39,14 +40,14 @@ class cartsManager {
 
     async addcart(cart) {
         await this.loadCarts();
-        const products = {...cart}
+        const products = [...cart]
         try {
             if (this.carts.length != 0) {
                 this.id = this.id + 1
             }
             this.carts.push(
                 {
-                    "products":products,
+                    "products": products,
                     "id": this.id
                 })
             await fs.promises.writeFile(this.path, JSON.stringify(this.carts))
@@ -57,24 +58,43 @@ class cartsManager {
         }
     }
 
-    async addProductToCart(idCart, idProduct,quantity) {
-        const cart = await fs.promises.readFile(this.path, 'utf-8')
-        const cartParse = JSON.parse(cart)
-        const cartFind = cartParse.find((cart) => cart.id === idCart)
+    async addProductToCart(idCart, idProduct, quantity) {
+        await this.loadCarts()
+        const cartFind = this.carts.find((cart) => cart.id === idCart)
         if (!cartFind) {
             throw Error("ID de Carrito Invalido")
         }
-        const porductsStorage = cartParse.products;
-        const productsFind = porductsStorage.find((prod) => prod.id === idProduct)
+        let indexCart;
+        let indexProd;
+        for (let index = 0; index < this.carts.length; index++) {
+            if (this.carts[index].id === idCart) {
+                indexCart = index;
+                index = this.carts.length
+            } else {
+                indexCart = false
+            }
+        }
+
+        let productsStorage = this.carts[indexCart].products;
+        const productsFind = productsStorage.find((prod) => prod.id == idProduct)
+
         if (productsFind) {
-            productsFind.quantity = productsFind.quantity + quantity;
+            for (let i = 0; i < productsStorage.length; i++) {
+                if (productsStorage[i].id === idProduct) {
+                    indexProd = i;
+                    i = productsStorage.length
+                } else {
+                    indexProd = false
+                }
+            }
+            productsStorage[indexProd].quantity=productsStorage[indexProd].quantity+quantity
         } else {
-            cartParse.products.push({
-                idProduct,
-                quantity
+            this.carts[indexCart].products.push({
+                "id": idProduct,
+                "quantity": quantity
             })
         }
-        await fs.promises.writeFile(this.path, JSON.stringify(cartParse))
+            await fs.promises.writeFile(this.path, JSON.stringify(this.carts))
     }
 
     async deleteProduct(id) {
