@@ -2,13 +2,7 @@ import { Router, json } from 'express'
 import productManager from '../../productManager.js'
 const productsRouter = Router()
 
-// const { Router } = require('express')
-// const Express = require('express')
-// const app = Router();
-// const productManager = require('../../productManager.js')
-
 const pM = new productManager();
-// const produtcs = await pM.loadProducts();
 
 productsRouter.get('/', async (req, res) => {
     let consulta = req.query

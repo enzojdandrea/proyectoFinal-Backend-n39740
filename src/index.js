@@ -2,8 +2,6 @@ import Express from 'express';
 import productsRouter from './routes/productsRouter.js';
 import cartRouter from './routes/cartRouter.js'
 
-// const porductsRouter = require('./routes/productsRouter.js');
-// const cartRouter = require('./routes/cartRouter.js');
 const PORT = 8083;
 
 const app = Express();

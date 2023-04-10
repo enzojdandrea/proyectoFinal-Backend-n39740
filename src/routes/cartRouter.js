@@ -2,10 +2,6 @@ import { Router } from 'express'
 import cartsManager from '../../cartManager.js';
 const cartRouter = Router()
 
-// const Express = require('express')
-// const app = Express();
-// const cartsManager = require('../../cartManager.js')
-
 const cM = new cartsManager();
 
 cartRouter.get('/', async (req, res) => {
