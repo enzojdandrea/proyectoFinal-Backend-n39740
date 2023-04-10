@@ -43,15 +43,18 @@ productsRouter.get('/:pId', async (req, res) => {
 
 productsRouter.post('/',async (req,res)=>{
     await pM.addproduct(req.body);
+    req.send({message:'Producto agregado con exito'})
 })
 
 productsRouter.put('/:pId',async (req,res)=>{
     const id =parseInt(req.params.pId)
     await pM.updateProduct(id,req.body)
+    req.send({message:'Producto modificado con exito'})
 })
 
 productsRouter.delete('/:pId',async (req,res)=>{
     await pM.deleteProduct(req.params.pId)
+    req.send({message:'Producto borrado con exito'})
 })
 
 export default productsRouter
