@@ -1,5 +1,6 @@
 import { Router, json } from 'express'
 import productManager from '../../productManager.js'
+
 const productsRouter = Router()
 
 const pM = new productManager();
@@ -21,7 +22,7 @@ productsRouter.get('/', async (req, res) => {
     }else{
         newListProducts.push(...products);
     }
-    
+    res.render('greetings',newListProducts)
     res.send(newListProducts)
 })
 
